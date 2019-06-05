@@ -29,8 +29,8 @@ from Foundation import NSPropertyListXMLFormat_v1_0  # NOQA
 # Script details
 __author__ = ['Carl Windus', 'Bryson Tyrrell']
 __license__ = 'Apache License 2.0'
-__version__ = '1.0.2.2'
-__date__ = '2018-11-23-1455'
+__version__ = '1.1.0.00'
+__date__ = '2019-06-04-1654'
 
 VERSION_STRING = 'Version: {} [{}] ({}), Authors: {}'.format(__version__, __date__, __license__, ', '.join(__author__))
 
@@ -496,12 +496,29 @@ class PrivacyProfiles(object):
         'Reminders',
         'Photos',
         'Camera',
+        'FileProviderPresence',
+        'ListenEvent',
+        'MediaLibrary',
         'Microphone',
         'Accessibility',
         'PostEvent',
+        'ScreenCapture',
+        'SpeechRecognition',
         'SystemPolicyAllFiles',
+        'SystemPolicyDesktopFolder',
+        'SystemPolicyDocumentsFolder',
+        'SystemPolicyDownloadsFolder',
+        'SystemPolicyRemovableVolumes',
+        'SystemPolicyNetworkVolumes',
         'SystemPolicySysAdminFiles',
         'AppleEvents'
+    ]
+
+    DENY_PAYLOADS = [
+        'Camera',
+        'ListenEvent',
+        'Microphone',
+        'ScreenCapture'
     ]
 
     def __init__(self, payload_description, payload_name, payload_identifier,
@@ -628,11 +645,21 @@ class PrivacyProfiles(object):
             app_lists['AppleEvents'] = {'_apps': arguments.get('events_apps_list', False), 'apps': list()}
             app_lists['Calendar'] = {'_apps': arguments.get('calendar_apps_list', False), 'apps': list()}
             app_lists['Camera'] = {'_apps': arguments.get('camera_apps_list', False), 'apps': list()}
+            app_lists['FileProviderPresence'] = {'_apps': arguments.get('file_providers_apps_list', False), 'apps': list()}
+            app_lists['ListenEvent'] = {'_apps': arguments.get('listen_event_apps_list', False), 'apps': list()}
+            app_lists['MediaLibrary'] = {'_apps': arguments.get('media_library_apps_list', False), 'apps': list()}
             app_lists['Microphone'] = {'_apps': arguments.get('microphone_apps_list', False), 'apps': list()}
             app_lists['Photos'] = {'_apps': arguments.get('photos_apps_list', False), 'apps': list()}
             app_lists['PostEvent'] = {'_apps': arguments.get('post_event_apps_list', False), 'apps': list()}
             app_lists['Reminders'] = {'_apps': arguments.get('reminders_apps_list', False), 'apps': list()}
+            app_lists['ScreenCapture'] = {'_apps': arguments.get('screen_capture_apps_list', False), 'apps': list()}
+            app_lists['SpeechRecognition'] = {'_apps': arguments.get('speech_recognition_apps_list', False), 'apps': list()}
             app_lists['SystemPolicyAllFiles'] = {'_apps': arguments.get('allfiles_apps_list', False), 'apps': list()}
+            app_lists['SystemPolicyDesktopFolder'] = {'_apps': arguments.get('desktop_apps_list', False), 'apps': list()}
+            app_lists['SystemPolicyDocumentsFolder'] = {'_apps': arguments.get('documents_apps_list', False), 'apps': list()}
+            app_lists['SystemPolicyDownloadsFolder'] = {'_apps': arguments.get('downloads_apps_list', False), 'apps': list()}
+            app_lists['SystemPolicyRemovableVolumes'] = {'_apps': arguments.get('removable_volumes_apps_list', False), 'apps': list()}
+            app_lists['SystemPolicyNetworkVolumes'] = {'_apps': arguments.get('network_volumes_apps_list', False), 'apps': list()}
             app_lists['SystemPolicySysAdminFiles'] = {'_apps': arguments.get('sysadmin_apps_list', False), 'apps': list()}
         else:
             app_lists = args
@@ -702,8 +729,8 @@ class PrivacyProfiles(object):
                     sending_app['identifier'] = app_identifier_type['identifier']
                     sending_app['identifier_type'] = app_identifier_type['identifier_type']
 
-                    # Camera and Microphone payloads can only DENY an app access to that hardware.
-                    if payload in ['Camera', 'Microphone'] or not allow:
+                    # For any payload that can only be set to 'Deny', change settings to enforce.
+                    if payload in self.DENY_PAYLOADS or not allow:
                         _allow = False
                         allow_statement = 'Deny'
                     else:
@@ -995,6 +1022,28 @@ def parse_args():
     )
 
     parser.add_argument(
+        '--lis', '--listenevents',
+        type=str,
+        nargs='*',
+        dest='listen_event_apps_list',
+        metavar='<app paths>',
+        help='Generate a ListenEvent payload for the specified applications. '
+             'This will be a DENY payload.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--screen', '--screencapture',
+        type=str,
+        nargs='*',
+        dest='screen_capture_apps_list',
+        metavar='<app paths>',
+        help='Generate a ScreenCapture payload for the specified applications. '
+             'This will be a DENY payload.',
+        required=False,
+    )
+
+    parser.add_argument(
         '--mic', '--microphone',
         type=str,
         nargs='*',
@@ -1034,6 +1083,94 @@ def parse_args():
         metavar='<app paths>',
         help='Generate an SystemPolicyAllFiles payload for the specified '
              'applications. This applies to all protected system files.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--file', '--fileprovider',
+        type=str,
+        nargs='*',
+        dest='file_providers_apps_list',
+        metavar='<app paths>',
+        help='Generate an FileProviderPresence payload for the specified '
+             'applications. This applies to File Provider Presence.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--media', '--medialibrary',
+        type=str,
+        nargs='*',
+        dest='media_library_apps_list',
+        metavar='<app paths>',
+        help='Generate a MediaLibrary payload for the specified '
+             'applications. This applies to Media Library.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--speech', '--speechrecognition',
+        type=str,
+        nargs='*',
+        dest='speech_recognition_apps_list',
+        metavar='<app paths>',
+        help='Generate a SpeechRecognition payload for the specified '
+             'applications. This applies to Speech Recognition.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--desk', '--desktopfolder',
+        type=str,
+        nargs='*',
+        dest='desktop_apps_list',
+        metavar='<app paths>',
+        help='Generate an SystemPolicyDesktopFolder payload for the specified '
+             'applications. This applies to the Desktop folder.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--doc', '--documentsfolder',
+        type=str,
+        nargs='*',
+        dest='documents_apps_list',
+        metavar='<app paths>',
+        help='Generate an SystemPolicyDocumentsFolder payload for the specified '
+             'applications. This applies to the Ddocuments folder.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--down', '--downloadsfolder',
+        type=str,
+        nargs='*',
+        dest='downloads_apps_list',
+        metavar='<app paths>',
+        help='Generate an SystemPolicyDownloadsFolder payload for the specified '
+             'applications. This applies to the Downloads folder.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--rvol', '--removablevolumes',
+        type=str,
+        nargs='*',
+        dest='removable_volumes_apps_list',
+        metavar='<app paths>',
+        help='Generate an SystemPolicyRemovableVolumes payload for the specified '
+             'applications. This applies to removable volumes.',
+        required=False,
+    )
+
+    parser.add_argument(
+        '--nvol', '--networkvolumes',
+        type=str,
+        nargs='*',
+        dest='network_volumes_apps_list',
+        metavar='<app paths>',
+        help='Generate an SystemPolicyNetworkVolumes payload for the specified '
+             'applications. This applies to network volumes.',
         required=False,
     )
 
