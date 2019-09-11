@@ -29,8 +29,8 @@ from Foundation import NSPropertyListXMLFormat_v1_0  # NOQA
 # Script details
 __author__ = ['Carl Windus', 'Bryson Tyrrell']
 __license__ = 'Apache License 2.0'
-__version__ = '1.1.0.00'
-__date__ = '2019-06-04-1654'
+__version__ = '1.1.0.01'
+__date__ = '2019-09-11-1904'
 
 VERSION_STRING = 'Version: {} [{}] ({}), Authors: {}'.format(__version__, __date__, __license__, ', '.join(__author__))
 
@@ -458,26 +458,6 @@ def read_plist(filepath):
             error = "Unknown error"
         errmsg = "%s in file %s" % (error, filepath)
         raise NSPropertyListSerializationException(errmsg)
-    else:
-        return dataObject
-
-
-def read_plist_from_string(data):
-    """Read a plist data from a string. Return the root object."""
-    try:
-        plistData = buffer(data)
-    except TypeError, err:
-        raise NSPropertyListSerializationException(err)
-    dataObject, dummy_plistFormat, error = (
-        NSPropertyListSerialization.
-        propertyListFromData_mutabilityOption_format_errorDescription_(plistData, NSPropertyListMutableContainers, None, None)
-    )
-    if dataObject is None:
-        if error:
-            error = error.encode('ascii', 'ignore')
-        else:
-            error = "Unknown error"
-        raise NSPropertyListSerializationException(error)
     else:
         return dataObject
 
