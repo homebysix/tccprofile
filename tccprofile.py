@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+# pylint: disable=line-too-long
+# pylint: disable=superfluous-parens
 import argparse
 import datetime
 import errno
 import os
 import plistlib
-import pytz
 import re
 import uuid
 import subprocess
@@ -14,6 +15,7 @@ import sys
 import Tkinter as tk
 import ttk
 import tkFileDialog
+import pytz
 
 # Imports specifically for FoundationPlist
 # PyLint cannot properly find names inside Cocoa libraries, so issues bogus
@@ -562,8 +564,8 @@ class PrivacyProfiles(object):
         if self.removal_date and self.timezone:
             self.template['RemovalDate'] = self._utc_formatted_time(local_time=self.removal_date, timezone=self.timezone)
         elif self.removal_date and not self.timezone:
-            print 'A time zone for the target Mac must be provided when specifying a removal date. For example: --timezone="Australia/Brisbane"'
-            print 'The time zone of the target is used as the time zone on the profile build machine may differ.'
+            print('A time zone for the target Mac must be provided when specifying a removal date. For example: --timezone="Australia/Brisbane"')
+            print('The time zone of the target is used as the time zone on the profile build machine may differ.')
             sys.exit(1)
 
         self._app_lists = dict()
@@ -613,10 +615,9 @@ class PrivacyProfiles(object):
 
             # Make sure AppleEvents apps are splitabble
             if arguments.get('events_apps_list', False) is not None and not all([len(app.split(',')) == 2 for app in arguments.get('events_apps_list', False)]):
-                print 'AppleEvents applications must be in the format of /Application/Path/EventSending.app,/Application/Path/EventReceiving.app'
-                print 'or'
-                print ('/Volumes/ExtDisk/Path/EventSending.app:/Application/OverridePath/EventSending.app,'
-                       '/Volumes/ExtDisk/Path/EventReceiving.app:/Application/OverridePath/EventReceiving.app')
+                print('AppleEvents applications must be in the format of /Application/Path/EventSending.app,/Application/Path/EventReceiving.app')
+                print('or')
+                print('/Volumes/ExtDisk/Path/EventSending.app:/Application/OverridePath/EventSending.app,/Volumes/ExtDisk/Path/EventReceiving.app:/Application/OverridePath/EventReceiving.app')
                 sys.exit(1)
 
             # Build up args to pass to the class init
@@ -657,7 +658,7 @@ class PrivacyProfiles(object):
                     if key == 'AppleEvents' and app.count(',') == 1:
                         receiving_app = app.split(',')[1]
                         if sending_app.count(':') > 1 or receiving_app.count(':') > 1:
-                            print 'Too many \':\' characters in AppleEvents app string. One \':\' per sender and recever app is excpected.'
+                            print('Too many \':\' characters in AppleEvents app string. One \':\' per sender and recever app is excpected.')
                             sys.exit(1)
                         else:
                             value['sending_app_path'] = sending_app.split(':')[0] if ':' in sending_app else value['sending_app_path']
@@ -679,7 +680,7 @@ class PrivacyProfiles(object):
         # Handle if no payload arguments are supplied,
         # Can't create an empty profile.
         if not any(app_lists.keys()):
-            print 'You must provide at least one payload type to create a profile.'
+            print('You must provide at least one payload type to create a profile.')
             raise TCCProfileException
 
         self._app_lists = app_lists
@@ -779,7 +780,7 @@ class PrivacyProfiles(object):
                 self._sign_profile(certificate_name=self._sign_cert, input_file=self._filename)
         else:
             # Print as formatted plist out to stdout
-            print plistlib.writePlistToString(self.template).rstrip('\n')
+            print(plistlib.writePlistToString(self.template).rstrip('\n'))
 
     @staticmethod
     def _set_timezone(timezone):
@@ -881,7 +882,7 @@ class PrivacyProfiles(object):
                 # result = [x.rstrip('\n') for x in result.splitlines() if x.startswith('designated => ')][0]
                 return result
             elif process.returncode is 1 and 'not signed' in error:
-                print 'App at {} is not signed. Exiting.'.format(path)
+                print('App at {} is not signed. Exiting.'.format(path))
                 sys.exit(1)
         else:
             raise OSError(errno.ENOENT, os.strerror(errno.ENOENT), path)
