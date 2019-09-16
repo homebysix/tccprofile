@@ -67,8 +67,8 @@ class App(tk.Frame):
         self.master.protocol('WM_DELETE_WINDOW', self.click_quit)
         self.master.bind('<Return>', self.click_save)
 
-        x = (self.master.winfo_screenwidth() - self.master.winfo_reqwidth()) / 2
-        y = (self.master.winfo_screenheight() - self.master.winfo_reqheight()) / 4
+        x = (self.master.winfo_screenwidth() - self.master.winfo_reqwidth()) // 2
+        y = (self.master.winfo_screenheight() - self.master.winfo_reqheight()) // 4
         self.master.geometry("+{}+{}".format(x, y))
 
         self.master.config(menu=tk.Menu(self.master))
