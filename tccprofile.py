@@ -14,10 +14,19 @@ import re
 import uuid
 import subprocess
 import sys
-import Tkinter as tk
-import ttk
-import tkFileDialog
 import pytz
+
+# Tkinter
+try:
+    # Python 3
+    import tkinter as tk
+    from tkinter import ttk
+    from tkinter import filedialog as tkFileDialog
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import ttk
+    import tkFileDialog
 
 # Imports specifically for FoundationPlist
 # PyLint cannot properly find names inside Cocoa libraries, so issues bogus
