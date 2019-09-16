@@ -397,9 +397,9 @@ class App(tk.Frame):
 
     @staticmethod
     def _list_signing_certs():
-        output = subprocess.check_output(
+        output = str(subprocess.check_output(
             ['/usr/bin/security', 'find-identity', '-p', 'codesigning', '-v']
-        ).split('\n')
+        )).split('\n')
 
         cert_list = ['No']
         for i in output:
