@@ -81,7 +81,7 @@ class ReadTCC():
                 print(' {:<35} | {}'.format('Service', 'Client'))
                 print('-----------------------------------------------------------------------')
                 for service, client in query:
-                    print((' {:<35} | {}'.format(service, client)))
+                    print(' {:<35} | {}'.format(service, client))
             self.sqlite.disconnect(self.tcc_db)
 
 
