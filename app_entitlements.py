@@ -34,8 +34,8 @@ if len(sys.argv) > 1:
     if sys.argv[1]:
         pprint(entitlements(sys.argv[1]))
     else:
-        print usage
+        print(usage)
         sys.exit(1)
 else:
-    print usage
+    print(usage)
     sys.exit(1)
