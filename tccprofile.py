@@ -586,7 +586,7 @@ class PrivacyProfiles(object):
             # exist because skip forward/backward in DST change over, an exception will be raised.
             try:
                 local_time = timezone.localize(local_time, is_dst=None)
-            except (pytz.exceptions.AmbiguousTimeError, pytz.exceptions.NonExistentTimeError), e:
+            except (pytz.exceptions.AmbiguousTimeError, pytz.exceptions.NonExistentTimeError) as e:
                 # If an AmbiguousTimeError occurs, it is likely because that time has occurred more than once.
                 # For example, 2002-10-27 01:30 happened twice in the US/Eastern timezone when DST ended.
                 # If a NonExistentTimeError occurs, it is because that particular point in time has not/does not occur.
