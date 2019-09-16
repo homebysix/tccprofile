@@ -3,6 +3,8 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=superfluous-parens
+from __future__ import absolute_import, print_function
+
 import argparse
 import datetime
 import errno

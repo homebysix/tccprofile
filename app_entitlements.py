@@ -1,6 +1,8 @@
 #!/usr/bin/python
 """Uses python's pprint to 'pretty print' the entitlements of an app (if they exist) that has been codesigned."""
 
+from __future__ import absolute_import, print_function
+
 import os
 import plistlib
 import sys
